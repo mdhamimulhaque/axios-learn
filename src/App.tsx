@@ -10,16 +10,29 @@ export default function App() {
   const [posts, setPosts] = useState<PostType[] | []>([]);
   const [post, setPost] = useState<PostType | null>(null); // post I am editing
   const [error, setError] = useState<string | null>(null);
-  const handleAddPost = (newPost) => {
-    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
 
-    setPosts([
-      ...posts,
-      {
-        id,
+  const handleAddPost = async (newPost: { title: string; body: string }) => {
+    try {
+      const id = posts.length ? Number(posts[posts.length - 1].id) + 1 : 1;
+
+      const newPostData = {
+        id: id.toString(),
         ...newPost,
-      },
-    ]);
+      };
+      const response = await axios.post(
+        `http://localhost:8000/posts`,
+        newPostData
+      );
+
+      setPosts([...posts, response.data]);
+    } catch (err) {
+      if (err.response) {
+        // error came from server
+        setError(
+          `Error from server: status: ${err.response.status} - message: ${err.response.statusText}`
+        );
+      }
+    }
   };
 
   const handleDeletePost = (postId) => {
