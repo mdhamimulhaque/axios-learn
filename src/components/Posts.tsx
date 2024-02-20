@@ -2,8 +2,8 @@ import { PostType } from "./../types/PostTypes";
 
 type Props = {
   posts: PostType[];
-  onDeletePost: Function;
-  onEditClick: Function;
+  onDeletePost: (postId: string) => string;
+  onEditClick: (updatedPost: PostType) => PostType;
 };
 
 export default function Posts({ posts, onDeletePost, onEditClick }: Props) {

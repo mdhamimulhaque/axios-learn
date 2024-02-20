@@ -3,11 +3,10 @@ import "./App.css";
 import AddPost from "./components/AddPost";
 import EditPost from "./components/EditPost";
 import Posts from "./components/Posts";
-import initialPosts from "./data/db.js";
 import { PostType } from "./types/PostTypes";
 
 export default function App() {
-  const [posts, setPosts] = useState<PostType[]>(initialPosts);
+  const [posts, setPosts] = useState<PostType[] | []>([]);
   const [post, setPost] = useState<PostType | null>(null); // post I am editing
 
   const handleAddPost = (newPost) => {

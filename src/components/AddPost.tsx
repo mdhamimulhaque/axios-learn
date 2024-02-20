@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { PostType } from "../types/PostTypes";
 
 type Props = {
-  onAddPost: Function;
+  onAddPost: (newPost: PostType) => PostType;
 };
 
 export default function AddPost({ onAddPost }: Props) {

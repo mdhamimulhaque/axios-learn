@@ -3,7 +3,7 @@ import { PostType } from "../types/PostTypes";
 
 type Props = {
   post: PostType;
-  onEditPost: Function;
+  onEditPost: (updatedPost: PostType) => updatedPost;
 };
 
 export default function EditPost({ post, onEditPost }: Props) {
