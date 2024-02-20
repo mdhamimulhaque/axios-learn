@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import "./App.css";
+import api from "./api/api";
 import AddPost from "./components/AddPost";
 import EditPost from "./components/EditPost";
 import Posts from "./components/Posts";
@@ -19,35 +19,22 @@ export default function App() {
         id: id.toString(),
         ...newPost,
       };
-      const response = await axios.post(
-        `http://localhost:8000/posts`,
-        newPostData
-      );
+      const response = await api.post(`/posts`, newPostData);
 
       setPosts([...posts, response.data]);
     } catch (err) {
-      if (err.response) {
-        // error came from server
-        setError(
-          `Error from server: status: ${err.response.status} - message: ${err.response.statusText}`
-        );
-      }
+      setError(err.message);
     }
   };
 
   const handleDeletePost = async (postId) => {
     if (confirm("Are you sure you want to delete the post?")) {
       try {
-        await axios.delete(`http://localhost:8000/posts/${postId}`);
+        await api.delete(`/posts/${postId}`);
         const newPosts = posts.filter((post: PostType) => post.id !== postId);
         setPosts(newPosts);
       } catch (err) {
-        if (err.response) {
-          // error came from server
-          setError(
-            `Error from server: status: ${err.response.status} - message: ${err.response.statusText}`
-          );
-        }
+        setError(err.message);
       }
     } else {
       console("You chose not to delete the post!");
@@ -56,22 +43,14 @@ export default function App() {
 
   const handleEditPost = async (updatedPost) => {
     try {
-      const response = await axios.patch(
-        `http://localhost:8000/posts/${updatedPost.id}`,
-        updatedPost
-      );
+      const response = await api.patch(`/posts/${updatedPost.id}`, updatedPost);
 
       const updatedPosts = posts.map((post) =>
         post.id === response.data.id ? response?.data : post
       );
       setPosts(updatedPosts);
     } catch (err) {
-      if (err.response) {
-        // error came from server
-        setError(
-          `Error from server: status: ${err.response.status} - message: ${err.response.statusText}`
-        );
-      }
+      setError(err.message);
     }
   };
 
@@ -79,17 +58,12 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/posts");
+        const response = await api.get("/posts");
         if (response && response?.data) {
           setPosts(response?.data);
         }
       } catch (err) {
-        if (err.response) {
-          // error came from server
-          setError(
-            `Error from server: status: ${err.response.status} - message: ${err.response.statusText}`
-          );
-        }
+        setError(err.message);
       }
     };
     fetchData();
