@@ -35,10 +35,20 @@ export default function App() {
     }
   };
 
-  const handleDeletePost = (postId) => {
+  const handleDeletePost = async (postId) => {
     if (confirm("Are you sure you want to delete the post?")) {
-      const newPosts = posts.filter((post: PostType) => post.id !== postId);
-      setPosts(newPosts);
+      try {
+        await axios.delete(`http://localhost:8000/posts/${postId}`);
+        const newPosts = posts.filter((post: PostType) => post.id !== postId);
+        setPosts(newPosts);
+      } catch (err) {
+        if (err.response) {
+          // error came from server
+          setError(
+            `Error from server: status: ${err.response.status} - message: ${err.response.statusText}`
+          );
+        }
+      }
     } else {
       console("You chose not to delete the post!");
     }
